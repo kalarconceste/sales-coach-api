@@ -19,14 +19,14 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                bat 'pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
                 echo 'Running Unit Tests...'
-                sh 'pytest --junitxml=test-results.xml'
+                bat 'pytest --junitxml=test-results.xml'
             }
             post {
                 always {
