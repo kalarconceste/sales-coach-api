@@ -17,40 +17,21 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build and Test') {
             steps {
-                bat 'pip install -r requirements.txt'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                echo 'Running Unit Tests...'
-                bat 'pytest --junitxml=test-results.xml'
+                script {
+                    echo 'Building Docker Image...'
+                    dockerImage = docker.build("${env.DOCKER_USER}/${env.DOCKER_IMAGE}:${env.DOCKER_TAG}")
+                    
+                    echo 'Running Tests inside Container...'
+                    dockerImage.inside {
+                        sh 'pytest --junitxml=test-results.xml'
+                    }
+                }
             }
             post {
                 always {
                     junit 'test-results.xml'
-                }
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                echo 'Running SonarQube Analysis...'
-                // Assuming SonarQube scanner is configured globally or via tool
-                // withSonarQubeEnv('SonarQube') {
-                //    sh 'sonar-scanner'
-                // }
-                echo 'SonarQube analysis skipped for simulation (requires server)'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                echo 'Building Docker Image...'
-                script {
-                    dockerImage = docker.build("${env.DOCKER_USER}/${env.DOCKER_IMAGE}:${env.DOCKER_TAG}")
                 }
             }
         }
