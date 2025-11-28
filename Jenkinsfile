@@ -6,7 +6,7 @@ pipeline {
         DOCKER_IMAGE = 'sales-coach-api'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         // Replace with your actual DockerHub username
-        DOCKER_USER = 'tu_usuario_dockerhub' 
+        DOCKER_USER = 'karenalarcon' 
     }
 
     stages {
@@ -76,15 +76,5 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            cleanWs()
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
-    }
+
 }
